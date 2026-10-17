@@ -1,0 +1,44 @@
+name: trust_juggler_driver
+description: "Trust Juggler // Driver Side - Real-Time Behavioral Telemetry & Liveness Verification App"
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Firebase Core & Firestore
+  firebase_core: ^2.27.0
+  firebase_auth: ^4.17.8
+  cloud_firestore: ^4.15.8
+  cloud_functions: ^4.6.8
+
+  # Biometrics & ML Kit Face Detection
+  google_mlkit_face_detection: ^0.10.0
+  camera: ^0.10.5+9
+
+  # State Management & Architecture
+  provider: ^6.1.1
+
+  # Telemetry & Sensors
+  geolocator: ^11.0.0
+  device_info_plus: ^9.1.2
+  battery_plus: ^5.0.3
+
+  # UI & Styling
+  google_fonts: ^6.1.0
+  intl: ^0.19.0
+  permission_handler: ^11.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/

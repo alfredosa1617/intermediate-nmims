@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+  <meta name="theme-color" content="#111827"/>
+  <title>TRUST JUGGLER // DRIVER ENGINE</title>
+
+  <!-- Typography & Icons -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface": "#F7F9FD",
+            "primary": "#111827",
+            "error": "#DC2626",
+            "success": "#16A34A",
+            "warning": "#D97706"
+          },
+          fontFamily: {
+            "sans": ["Inter", "sans-serif"],
+            "mono": ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    * { border-radius: 0px !important; }
+    ::-webkit-scrollbar { display: none; }
+    .pulse-dot {
+      animation: pulseAnimation 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulseAnimation {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+  </style>
+
+  <!-- Firebase Web SDK Compatibility CDN -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+</head>
+
+<body class="bg-slate-900 text-slate-100 flex items-center justify-center min-h-screen p-0 sm:p-4 font-sans">
+
+  <!-- Mobile Frame Container -->
+  <div class="w-full sm:max-w-[420px] h-screen sm:h-[880px] bg-[#F7F9FD] text-[#111827] flex flex-col relative overflow-hidden shadow-2xl border border-slate-700">
+    
+    <!-- Top App Bar -->
+    <header class="h-14 bg-white border-b border-gray-200 px-4 flex items-center justify-between z-20 shrink-0">
+      <div class="flex items-center gap-2">
+        <div id="driver-shift-dot" class="w-2 h-2 bg-gray-400"></div>
+        <span id="driver-header-name" class="font-mono text-xs font-bold tracking-wider text-[#111827]">RAJESH KUMAR (#RD-88492)</span>
+      </div>
+      <div class="flex items-center gap-1.5 bg-gray-100 px-2 py-0.5">
+        <span class="font-mono text-[10px] font-semibold text-gray-600">BLR-SOUTH-01</span>
+      </div>
+    </header>
+
+    <!-- SCREEN 1: ONBOARDING & E-KYC (Hidden by default) -->
+    <section id="screen-onboarding" class="hidden flex-1 p-5 flex flex-col bg-[#F7F9FD] overflow-y-auto">
+      <div class="flex justify-between items-center mb-4">
+        <span class="font-mono text-[11px] font-bold text-gray-900">TRUST JUGGLER // ONBOARDING</span>
+        <span class="font-mono text-[9px] bg-gray-200 px-1.5 py-0.5 font-semibold text-gray-700">STEP 2/2</span>
+      </div>
+      <h2 class="text-xl font-bold text-gray-900 mb-1">BIOMETRIC BASELINE ENROLLMENT</h2>
+      <p class="text-xs text-gray-600 mb-6">Align your face in natural light to generate your encrypted baseline hash.</p>
+      
+      <div class="w-64 h-64 mx-auto bg-white border-2 border-gray-900 relative overflow-hidden mb-6 flex items-center justify-center">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuATXHtS1hx20mrHfzsdg2hem9hr5EWVr1I8OeO3ttq2UEIqgmxnqCwgc0J2w98ugKNjUgaP1ydRy51v8WFk6fdcMFAH_7YTSDxmXKJ-uHuEi75sa348L3KzIHuBI6sRCRqtI4ba4HPe6KaLHxS-sm6v1XD7pNbXNQlSFbIJsPY_W_4A5pWgAXJqeKzImmRvFIXvKqren2VK2masxwhWYmtRotHqPTI57JFqzqtCYztZzk-zuhBMLnzOPg" class="w-full h-full object-cover grayscale contrast-125"/>
+        <div class="absolute bottom-2 left-2 bg-black text-white font-mono text-[8px] px-1.5 py-0.5 uppercase">
+          AADHAAR E-KYC MASTER
+        </div>
+      </div>
+
+      <div class="mt-auto">
+        <button onclick="finishOnboarding()" class="w-full bg-gray-900 hover:bg-black text-white font-mono text-xs font-bold py-3.5 tracking-wider uppercase">
+          ENROLL E-KYC BASELINE & START SHIFT
+        </button>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: ACTIVE SHIFT & TELEMETRY DASHBOARD (Default) -->
+    <section id="screen-dashboard" class="flex-1 flex flex-col overflow-hidden">
+      <div class="flex-1 p-4 overflow-y-auto space-y-3.5">
+        
+        <!-- Shift Toggle Card -->
+        <div class="bg-white border border-gray-200 p-3.5 flex items-center justify-between">
+          <div>
+            <div id="shift-status-title" class="font-mono text-xs font-bold text-gray-700">SHIFT INACTIVE // OFFLINE</div>
+            <div class="text-[11px] text-gray-500 mt-0.5">Continuous telemetry stream pauses when offline</div>
+          </div>
+          <button id="btn-toggle-shift" onclick="toggleShift()" class="font-mono text-xs font-bold px-3 py-1.5 bg-gray-900 text-white uppercase hover:bg-gray-800 transition-colors">
+            GO ONLINE
+          </button>
+        </div>
+
+        <!-- 2x2 Metric Grid -->
+        <div class="grid grid-cols-2 gap-2">
+          <!-- Risk Score -->
+          <div class="bg-white border border-gray-200 p-2.5">
+            <div class="font-mono text-[10px] font-semibold text-gray-500 uppercase">RISK SCORE</div>
+            <div id="metric-risk-score" class="font-mono text-xl font-bold text-green-700 mt-1">0.05</div>
+            <div id="metric-risk-label" class="font-mono text-[9px] text-gray-400 mt-0.5">NOMINAL BASELINE</div>
+          </div>
+          <!-- Vehicle Speed -->
+          <div class="bg-white border border-gray-200 p-2.5">
+            <div class="font-mono text-[10px] font-semibold text-gray-500 uppercase">SPEED</div>
+            <div id="metric-speed" class="font-mono text-xl font-bold text-gray-900 mt-1">26.4 KM/H</div>
+            <div class="font-mono text-[9px] text-gray-400 mt-0.5">NORMAL CRUISE</div>
+          </div>
+          <!-- GPS Accuracy -->
+          <div class="bg-white border border-gray-200 p-2.5">
+            <div class="font-mono text-[10px] font-semibold text-gray-500 uppercase">GPS DRIFT</div>
+            <div id="metric-gps" class="font-mono text-xl font-bold text-gray-900 mt-1">±4.2 M</div>
+            <div class="font-mono text-[9px] text-gray-400 mt-0.5">ZONE 4B CORRIDOR</div>
+          </div>
+          <!-- Battery Health -->
+          <div class="bg-white border border-gray-200 p-2.5">
+            <div class="font-mono text-[10px] font-semibold text-gray-500 uppercase">BATTERY HEALTH</div>
+            <div id="metric-battery" class="font-mono text-xl font-bold text-gray-900 mt-1">84%</div>
+            <div class="font-mono text-[9px] text-gray-400 mt-0.5">DISCHARGING NOMINAL</div>
+          </div>
+        </div>
+
+        <!-- Baseline Hardware Profile -->
+        <div class="bg-white border border-gray-200 p-3 space-y-1.5">
+          <div class="font-mono text-[10px] font-bold text-gray-600 uppercase mb-1">REGISTERED BASELINE HARDWARE</div>
+          <div class="flex justify-between font-mono text-[10px]">
+            <span class="text-gray-500">DEVICE FINGERPRINT</span>
+            <span class="font-semibold text-gray-900">DEV-SM-G998B-9382</span>
+          </div>
+          <div class="flex justify-between font-mono text-[10px]">
+            <span class="text-gray-500">HANDSET MODEL</span>
+            <span class="font-semibold text-gray-900">Samsung Galaxy S21 Ultra</span>
+          </div>
+          <div class="flex justify-between font-mono text-[10px]">
+            <span class="text-gray-500">SIM ICCID</span>
+            <span class="font-semibold text-gray-900">8991000123456789012F</span>
+          </div>
+          <div class="flex justify-between font-mono text-[10px]">
+            <span class="text-gray-500">ACTIVE RISK VECTOR</span>
+            <span id="label-risk-vector" class="font-semibold text-green-700">NOMINAL_BASELINE</span>
+          </div>
+        </div>
+
+        <!-- Live Ingestion Terminal -->
+        <div class="bg-gray-900 text-white p-3 font-mono space-y-1">
+          <div class="flex justify-between text-[9px] text-gray-400 border-b border-gray-800 pb-1">
+            <span>TELEMETRY INGESTION STREAM</span>
+            <span class="text-green-400">AUTO-POLL: 4000MS</span>
+          </div>
+          <div id="telemetry-log-1" class="text-[10px] text-gray-200 pt-1">> SYSTEM STANDBY // READY FOR SHIFT</div>
+          <div id="telemetry-log-2" class="text-[9px] text-gray-400">> LAT: 12.9352 | LON: 77.6245 | SPEED: 26.4 km/h</div>
+          <div id="telemetry-log-3" class="text-[9px] text-gray-400">> HASH: DEV-SM-G998B-9382 | SIM: 8991000123456789012F</div>
+        </div>
+
+      </div>
+
+      <!-- DEMO MODE SIMULATOR TABS (Crucial for live judging presentation) -->
+      <div class="bg-gray-900 border-t border-gray-700 p-3 shrink-0">
+        <div class="flex justify-between items-center mb-2">
+          <div class="flex items-center gap-1.5 text-amber-400">
+            <span class="material-symbols-outlined text-[14px]">tune</span>
+            <span class="font-mono text-[10px] font-bold tracking-wider">DEMO MODE // PRESENTATION SIMULATOR</span>
+          </div>
+          <span id="simulator-status-badge" class="font-mono text-[9px] text-green-400 font-semibold">STATUS: ACTIVE</span>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="simulateNormalShift()" class="bg-green-600 hover:bg-green-700 text-white font-mono text-[10px] font-bold py-2.5 px-2 flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-[14px]">check_circle</span>
+            NORMAL SHIFT
+          </button>
+          <button onclick="simulateThreatAnomaly()" class="bg-red-600 hover:bg-red-700 text-white font-mono text-[10px] font-bold py-2.5 px-2 flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-[14px]">warning</span>
+            TRIGGER ANOMALY
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: THE TRUST CHALLENGE (LIVENESS PROMPT) -->
+    <section id="screen-liveness" class="hidden flex-1 relative bg-black flex flex-col justify-between p-4 overflow-hidden">
+      <!-- Simulated Camera View -->
+      <div class="absolute inset-0 z-0">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl1xVgnT55F3SFZknlEBs8XKP_oFL5QgxTYiClyd74thpyZKNz6x4Wf6vHAqXxOr3ZkSdpaV_f6AM8B-sBP8dyWeXdX9XZkraj_0Z1GmhEmMgQJzNlRl_Sfs-ivCIV1BgIXCFxy2w2_Dr_9Jjpj5hDC-iw_MthxZrA9GQ7vE35YELN0pRPqoq8m9AAk_InDnkeVxoPV4hQuwF2D5VNBtKPngWN_F4-J5SrwQ5AjVAlcmHQuMA0l8AVtg" class="w-full h-full object-cover opacity-80"/>
+      </div>
+
+      <!-- Top Header Notice -->
+      <div class="relative z-10 bg-gray-900/90 border border-gray-700 p-3">
+        <div class="flex items-center gap-1.5 text-amber-400 mb-1">
+          <span class="w-2 h-2 bg-amber-500"></span>
+          <span class="font-mono text-xs font-bold">TRUST CHALLENGE // SPOT-CHECK</span>
+        </div>
+        <p class="text-[11px] text-gray-200">Anomalous behavioral telemetry was flagged. Please blink twice or smile into the camera overlay.</p>
+      </div>
+
+      <!-- Center Biometric Reticle -->
+      <div class="relative z-10 w-56 h-64 mx-auto border-2 border-amber-400 flex flex-col items-center justify-between p-2">
+        <div class="text-[9px] font-mono text-amber-300 font-bold bg-black/70 px-2 py-0.5">
+          CONFIDENCE: 94.2%
+        </div>
+        <div id="liveness-action-prompt" class="text-xs font-mono font-bold text-white bg-black/80 px-2 py-1 text-center">
+          BLINK TWICE OR SMILE
+        </div>
+      </div>
+
+      <!-- Bottom Actions -->
+      <div class="relative z-10 space-y-2">
+        <div class="bg-black/80 p-2.5 flex justify-around text-center font-mono text-[10px]">
+          <div>
+            <div class="text-gray-400 text-[9px]">BLINKS</div>
+            <div id="challenge-blinks" class="text-amber-400 font-bold text-sm">0/2</div>
+          </div>
+          <div class="w-px bg-gray-700 h-6"></div>
+          <div>
+            <div class="text-gray-400 text-[9px]">SMILE</div>
+            <div id="challenge-smile" class="text-gray-400 font-bold text-sm">DETECTING...</div>
+          </div>
+        </div>
+        <button onclick="completeLivenessVerification()" class="w-full bg-green-600 hover:bg-green-700 text-white font-mono text-xs font-bold py-3 uppercase">
+          CONFIRM BIOMETRICS & UNLOCK
+        </button>
+      </div>
+    </section>
+
+    <!-- SCREEN 4: HARD LOCK / FREEZE SCREEN -->
+    <section id="screen-frozen" class="hidden flex-1 bg-gray-950 p-6 flex flex-col justify-between text-white overflow-y-auto">
+      <div>
+        <div class="bg-red-600 text-white font-mono text-[10px] font-bold px-2 py-1 flex items-center gap-1.5 uppercase mb-6">
+          <span class="material-symbols-outlined text-[14px]">lock</span>
+          CARRIER LOCKDOWN // SECOPS DIRECTIVE
+        </div>
+        
+        <h1 class="text-2xl font-bold tracking-tight text-white mb-3">
+          ACCOUNT TEMPORARILY SUSPENDED FOR SECURITY AUDIT
+        </h1>
+        <p class="text-xs text-gray-400 leading-relaxed mb-6">
+          High-confidence behavioral telemetry anomalies (unrecognized handset hash, foreign SIM swap, or impossible velocity delta) were detected on this account.
+        </p>
+
+        <div class="bg-gray-900 border border-gray-800 p-4 space-y-2 font-mono text-xs">
+          <div class="flex justify-between">
+            <span class="text-gray-500">RIDER ASSET</span>
+            <span class="text-white">Rajesh Kumar (#RD-88492)</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-500">RISK INDEX</span>
+            <span class="text-red-400 font-bold">0.95 [CRITICAL]</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-500">FLAGGED VECTOR</span>
+            <span class="text-red-400">SIM_CHANGE + HARDWARE_MISMATCH</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-500">STATUS</span>
+            <span class="text-red-500 font-bold">ACCOUNT_QUARANTINED</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-6">
+        <div class="text-center font-mono text-[10px] text-amber-400 flex items-center justify-center gap-1.5">
+          <span class="w-1.5 h-1.5 bg-amber-400 pulse-dot"></span>
+          LISTENING LIVE FOR SECOPS ADMIN CLEARANCE...
+        </div>
+        <button onclick="alert('Incident report dispatched to Carrier Suppression Desk.');" class="w-full bg-white text-gray-900 font-mono text-xs font-bold py-3.5 uppercase hover:bg-gray-200">
+          CONTACT DISPATCH SUPPRESSION DESK
+        </button>
+        <button onclick="simulateAdminApproval()" class="w-full text-center text-gray-500 font-mono text-[10px] underline hover:text-gray-400">
+          [ DEMO MODE: SIMULATE SECOPS ADMIN APPROVAL ]
+        </button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Web Controller Script -->
+  <script>
+    const state = {
+      isOnline: false,
+      status: 'ACTIVE', // 'ACTIVE', 'LIVENESS_PENDING', 'FROZEN'
+      riskScore: 0.05,
+      speed: 26.4,
+      blinks: 0,
+      smile: false,
+      ticker: null,
+      db: null
+    };
+
+    // Initialize Firebase
+    try {
+      const config = {
+        apiKey: "AIzaSyDemoDummyKey-TrustJugglerSecOps",
+        projectId: "trust-juggler-risk-engine"
+      };
+      if (!firebase.apps.length) firebase.initializeApp(config);
+      state.db = firebase.firestore();
+      
+      // Connect to Firestore listener on rider RD-88492
+      state.db.collection('riders').doc('RD-88492').onSnapshot(doc => {
+        if (doc.exists) {
+          const d = doc.data();
+          if (d.currentStatus && d.currentStatus !== state.status) {
+            updateStatus(d.currentStatus, d.activeRiskScore || state.riskScore);
+          }
+        }
+      });
+    } catch (e) {
+      console.warn("Operating with local state stream fallback:", e);
+    }
+
+    function updateStatus(newStatus, score) {
+      state.status = newStatus;
+      if (score !== undefined) state.riskScore = score;
+
+      document.getElementById('screen-dashboard').classList.add('hidden');
+      document.getElementById('screen-liveness').classList.add('hidden');
+      document.getElementById('screen-frozen').classList.add('hidden');
+      document.getElementById('screen-onboarding').classList.add('hidden');
+
+      const badge = document.getElementById('simulator-status-badge');
+
+      if (state.status === 'FROZEN') {
+        document.getElementById('screen-frozen').classList.remove('hidden');
+        badge.textContent = 'STATUS: FROZEN';
+        badge.className = 'font-mono text-[9px] text-red-400 font-semibold';
+      } else if (state.status === 'LIVENESS_PENDING') {
+        document.getElementById('screen-liveness').classList.remove('hidden');
+        badge.textContent = 'STATUS: LIVENESS_PENDING';
+        badge.className = 'font-mono text-[9px] text-amber-400 font-semibold';
+        startLivenessAnimation();
+      } else {
+        document.getElementById('screen-dashboard').classList.remove('hidden');
+        badge.textContent = 'STATUS: ACTIVE';
+        badge.className = 'font-mono text-[9px] text-green-400 font-semibold';
+      }
+      renderMetrics();
+    }
+
+    function renderMetrics() {
+      const scoreEl = document.getElementById('metric-risk-score');
+      scoreEl.textContent = Number(state.riskScore).toFixed(2);
+      if (state.riskScore > 0.65) {
+        scoreEl.className = 'font-mono text-xl font-bold text-red-600 mt-1';
+        document.getElementById('metric-risk-label').textContent = 'CRITICAL OVERRIDE';
+      } else if (state.riskScore > 0.35) {
+        scoreEl.className = 'font-mono text-xl font-bold text-amber-600 mt-1';
+        document.getElementById('metric-risk-label').textContent = 'CHALLENGE REQUIRED';
+      } else {
+        scoreEl.className = 'font-mono text-xl font-bold text-green-700 mt-1';
+        document.getElementById('metric-risk-label').textContent = 'NOMINAL BASELINE';
+      }
+      document.getElementById('metric-speed').textContent = state.speed.toFixed(1) + ' KM/H';
+    }
+
+    function toggleShift() {
+      state.isOnline = !state.isOnline;
+      const btn = document.getElementById('btn-toggle-shift');
+      const title = document.getElementById('shift-status-title');
+      const dot = document.getElementById('driver-shift-dot');
+
+      if (state.isOnline) {
+        btn.textContent = 'GO OFFLINE';
+        btn.className = 'font-mono text-xs font-bold px-3 py-1.5 bg-red-600 text-white uppercase hover:bg-red-700';
+        title.textContent = 'SHIFT ACTIVE // ONLINE';
+        title.className = 'font-mono text-xs font-bold text-green-700';
+        dot.className = 'w-2 h-2 bg-green-600 pulse-dot';
+        startTelemetryLoop();
+      } else {
+        btn.textContent = 'GO ONLINE';
+        btn.className = 'font-mono text-xs font-bold px-3 py-1.5 bg-gray-900 text-white uppercase hover:bg-gray-800';
+        title.textContent = 'SHIFT INACTIVE // OFFLINE';
+        title.className = 'font-mono text-xs font-bold text-gray-700';
+        dot.className = 'w-2 h-2 bg-gray-400';
+        clearInterval(state.ticker);
+      }
+    }
+
+    function startTelemetryLoop() {
+      clearInterval(state.ticker);
+      state.ticker = setInterval(() => {
+        if (!state.isOnline) return;
+        state.speed = 22 + Math.random() * 12;
+        renderMetrics();
+        document.getElementById('telemetry-log-1').textContent = '> PING INGEST: ' + new Date().toTimeString().split(' ')[0] + ' // NORMAL ROUTE';
+        document.getElementById('telemetry-log-2').textContent = '> SPEED: ' + state.speed.toFixed(1) + ' KM/H | GPS ACCURACY: 4.2M';
+      }, 4000);
+    }
+
+    function simulateNormalShift() {
+      state.riskScore = 0.05;
+      updateStatus('ACTIVE', 0.05);
+      document.getElementById('label-risk-vector').textContent = 'NOMINAL_BASELINE';
+      document.getElementById('label-risk-vector').className = 'font-semibold text-green-700';
+      document.getElementById('telemetry-log-1').textContent = '> SIMULATION: INGESTING NOMINAL CORRIDOR TELEMETRY';
+    }
+
+    function simulateThreatAnomaly() {
+      state.riskScore = 0.84;
+      document.getElementById('label-risk-vector').textContent = 'SIM_CHANGE + HARDWARE_MISMATCH';
+      document.getElementById('label-risk-vector').className = 'font-semibold text-red-600';
+      document.getElementById('telemetry-log-1').textContent = '> SIMULATION: INJECTING HARDWARE SWAP + 14.8KM GPS TELEPORTATION';
+      updateStatus('LIVENESS_PENDING', 0.84);
+      
+      // Update Firestore if available
+      if (state.db) {
+        state.db.collection('riders').doc('RD-88492').update({
+          currentStatus: 'LIVENESS_PENDING',
+          activeRiskScore: 0.84,
+          activeRiskVector: 'SIM_CHANGE + HARDWARE_MISMATCH'
+        }).catch(err => console.log(err));
+      }
+    }
+
+    function startLivenessAnimation() {
+      state.blinks = 0;
+      state.smile = false;
+      document.getElementById('challenge-blinks').textContent = '0/2';
+      document.getElementById('challenge-smile').textContent = 'DETECTING...';
+
+      setTimeout(() => {
+        state.blinks = 1;
+        document.getElementById('challenge-blinks').textContent = '1/2';
+      }, 1000);
+
+      setTimeout(() => {
+        state.blinks = 2;
+        document.getElementById('challenge-blinks').textContent = '2/2 (PASS)';
+        document.getElementById('challenge-blinks').className = 'text-green-400 font-bold text-sm';
+      }, 2000);
+
+      setTimeout(() => {
+        state.smile = true;
+        document.getElementById('challenge-smile').textContent = 'VERIFIED';
+        document.getElementById('challenge-smile').className = 'text-green-400 font-bold text-sm';
+        document.getElementById('liveness-action-prompt').textContent = 'BIOMETRIC MATCH CONFIRMED';
+        document.getElementById('liveness-action-prompt').className = 'text-xs font-mono font-bold text-green-400 bg-black/80 px-2 py-1 text-center';
+      }, 2800);
+    }
+
+    function completeLivenessVerification() {
+      updateStatus('ACTIVE', 0.12);
+      document.getElementById('label-risk-vector').textContent = 'NONE // BIOMETRIC_MATCH_OK';
+      document.getElementById('label-risk-vector').className = 'font-semibold text-green-700';
+
+      if (state.db) {
+        state.db.collection('riders').doc('RD-88492').update({
+          currentStatus: 'ACTIVE',
+          activeRiskScore: 0.12,
+          activeRiskVector: 'NONE // BIOMETRIC_MATCH_OK'
+        }).catch(err => console.log(err));
+      }
+    }
+
+    function simulateAdminApproval() {
+      updateStatus('ACTIVE', 0.08);
+      if (state.db) {
+        state.db.collection('riders').doc('RD-88492').update({
+          currentStatus: 'ACTIVE',
+          activeRiskScore: 0.08,
+          activeRiskVector: 'NONE'
+        }).catch(err => console.log(err));
+      }
+    }
+
+    function finishOnboarding() {
+      updateStatus('ACTIVE', 0.05);
+    }
+  </script>
+</body>
+</html>

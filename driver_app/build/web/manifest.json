@@ -1,0 +1,23 @@
+{
+  "name": "Trust Juggler Driver",
+  "short_name": "TJ Driver",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#F7F9FD",
+  "theme_color": "#111827",
+  "description": "Trust Juggler // Driver Side - Real-Time Behavioral Telemetry & Liveness Verification App",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "icons/Icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/Icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

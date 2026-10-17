@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+  <meta content="mobile_tab" name="shell-type"/>
+  <title>TRUST JUGGLER // RISK ENGINE</title>
+
+  <!-- Typography & Icons -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-tint": "#575e70",
+            "primary-fixed": "#dce2f7",
+            "surface-dim": "#d8dade",
+            "inverse-primary": "#c0c6db",
+            "surface-container-highest": "#e0e2e6",
+            "surface": "#f7f9fd",
+            "primary-fixed-dim": "#c0c6db",
+            "on-primary": "#ffffff",
+            "error-container": "#ffdad6",
+            "outline": "#76777d",
+            "on-primary-container": "#7d8497",
+            "tertiary-container": "#410002",
+            "secondary-container": "#d6e0f1",
+            "surface-container-lowest": "#ffffff",
+            "surface-bright": "#f7f9fd",
+            "on-secondary-fixed": "#121c28",
+            "on-tertiary-container": "#f63a35",
+            "on-tertiary-fixed-variant": "#93000b",
+            "error": "#ba1a1a",
+            "on-secondary": "#ffffff",
+            "on-surface": "#191c1f",
+            "on-error": "#ffffff",
+            "on-background": "#191c1f",
+            "surface-container": "#eceef2",
+            "tertiary": "#000000",
+            "secondary": "#555f6d",
+            "on-primary-fixed-variant": "#404758",
+            "on-primary-fixed": "#141b2b",
+            "surface-variant": "#e0e2e6",
+            "inverse-on-surface": "#eff1f5",
+            "outline-variant": "#c6c6cd",
+            "tertiary-fixed-dim": "#ffb4ab",
+            "tertiary-fixed": "#ffdad6",
+            "secondary-fixed-dim": "#bdc7d8",
+            "on-error-container": "#93000a",
+            "inverse-surface": "#2d3134",
+            "secondary-fixed": "#d9e3f4",
+            "on-surface-variant": "#45464c",
+            "on-secondary-fixed-variant": "#3e4755",
+            "primary-container": "#141b2b",
+            "on-secondary-container": "#596372",
+            "surface-container-high": "#e6e8ec",
+            "on-tertiary-fixed": "#410002",
+            "primary": "#000000",
+            "on-tertiary": "#ffffff",
+            "background": "#f7f9fd",
+            "surface-container-low": "#f2f4f8"
+          },
+          borderRadius: {
+            "DEFAULT": "0px",
+            "lg": "0px",
+            "xl": "0px",
+            "full": "9999px"
+          },
+          spacing: {
+            "space-xl": "1rem",
+            "space-lg": "0.75rem",
+            "space-xs": "0.25rem",
+            "space-2xl": "1.5rem",
+            "gutter": "0.5rem",
+            "space-sm": "0.375rem",
+            "gutter-lg": "1rem",
+            "space-md": "0.5rem",
+            "margin-mobile": "0.75rem",
+            "margin": "1rem"
+          },
+          fontFamily: {
+            "body-sm": ["Inter"],
+            "metric-xl": ["JetBrains Mono"],
+            "display-lg": ["Inter"],
+            "headline-lg": ["Inter"],
+            "label-caps": ["JetBrains Mono"],
+            "headline-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "data-mono": ["JetBrains Mono"],
+            "metric-md": ["JetBrains Mono"]
+          },
+          fontSize: {
+            "body-sm": ["12px", { lineHeight: "16px", letterSpacing: "0em", fontWeight: "400" }],
+            "metric-xl": ["28px", { lineHeight: "32px", letterSpacing: "-0.03em", fontWeight: "700" }],
+            "display-lg": ["32px", { lineHeight: "36px", letterSpacing: "-0.02em", fontWeight: "600" }],
+            "headline-lg": ["24px", { lineHeight: "28px", letterSpacing: "-0.015em", fontWeight: "600" }],
+            "label-caps": ["10px", { lineHeight: "12px", letterSpacing: "0.08em", fontWeight: "600" }],
+            "headline-sm": ["18px", { lineHeight: "22px", letterSpacing: "-0.01em", fontWeight: "600" }],
+            "body-md": ["13px", { lineHeight: "18px", letterSpacing: "-0.005em", fontWeight: "400" }],
+            "data-mono": ["11px", { lineHeight: "14px", letterSpacing: "0em", fontWeight: "400" }],
+            "metric-md": ["16px", { lineHeight: "20px", letterSpacing: "-0.02em", fontWeight: "600" }]
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    @layer base {
+      html, body { width: 100vw; margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+      .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+      .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+      main > :first-child { margin-top: 0 !important; }
+      main > :last-child { margin-bottom: 0 !important; }
+    }
+    ::-webkit-scrollbar { display: none; }
+    .pulse-dot {
+      animation: pulseAnimation 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulseAnimation {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+  </style>
+
+  <!-- Firebase Web SDK Compatibility CDN -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+</head>
+
+<body class="bg-surface font-body-sm text-body-sm text-on-surface antialiased flex flex-col min-h-screen">
+
+  <!-- Toast Notification Bar (Fixed at top) -->
+  <div id="toast-notification" class="fixed top-3 left-1/2 -translate-x-1/2 z-[100] bg-primary text-on-primary font-data-mono text-body-sm px-4 py-2 border border-outline opacity-0 pointer-events-none transition-opacity duration-300 shadow-lg uppercase">
+    SYSTEM BROADCAST
+  </div>
+
+  <!-- Header -->
+  <header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+    <div class="h-28 flex flex-col justify-between px-margin-mobile py-space-xs">
+      <div class="flex items-center justify-between w-full h-11">
+        <div class="flex items-center gap-space-sm">
+          <div class="w-1.5 h-1.5 bg-green-600 rounded-none pulse-dot"></div>
+          <span class="font-label-caps text-label-caps uppercase tracking-wider text-on-surface">TRUST JUGGLER // RISK ENGINE</span>
+          <span id="engine-status-text" class="font-label-caps text-label-caps text-green-700 bg-surface-container px-space-xs py-0.5 rounded-none">SYSTEM_ONLINE</span>
+        </div>
+        <div class="flex items-center gap-space-sm">
+          <button onclick="promptConfigModal()" class="text-secondary font-label-caps hover:text-on-surface uppercase border border-outline-variant px-2 py-0.5">
+            [FIREBASE CFG]
+          </button>
+          <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+            <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center w-full h-11 pb-space-xs gap-space-sm">
+        <div class="flex-1 flex items-center h-8 bg-surface-container-lowest px-space-sm gap-space-xs border-0">
+          <span class="material-symbols-outlined text-secondary text-[16px]">search</span>
+          <input class="w-full bg-transparent font-data-mono text-data-mono text-on-surface placeholder:text-outline focus:outline-none" placeholder="QUERY LOGS // ASSET ID // THREAT CORRELATION..." type="text"/>
+        </div>
+        <span class="font-data-mono text-data-mono text-secondary px-space-xs uppercase">SecOps Console</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 flex flex-col relative w-full pt-28 pb-16 bg-surface">
+    <div class="flex flex-col w-full bg-surface text-on-surface">
+
+      <!-- 1. Top Search & Stream Metadata Status -->
+      <div class="flex flex-col w-full bg-surface-container-lowest px-space-md py-space-sm gap-space-xs border-b border-surface-container">
+        <div class="flex items-center gap-space-xs bg-surface-container-low px-space-sm h-8">
+          <span class="material-symbols-outlined text-secondary text-[16px]">search</span>
+          <input id="search-rider-input" class="w-full bg-transparent font-data-mono text-data-mono uppercase text-on-surface placeholder:text-outline focus:outline-none" placeholder="SEARCH RIDER / DEVICE ID..." type="text" value=""/>
+          <span class="font-label-caps text-label-caps text-secondary uppercase cursor-pointer" onclick="document.getElementById('search-rider-input').value=''; document.getElementById('search-rider-input').dispatchEvent(new Event('input'));">ESC:CLEAR</span>
+        </div>
+        <div class="flex items-center justify-between font-label-caps text-label-caps text-secondary px-0.5">
+          <div class="flex items-center gap-space-xs">
+            <span class="w-1.5 h-1.5 bg-green-600 pulse-dot"></span>
+            <span class="text-on-surface font-semibold">ENGINE: ACTIVE_STREAM</span>
+          </div>
+          <div class="flex items-center gap-space-sm">
+            <span id="engine-latency-text">LATENCY: 18ms</span>
+            <span class="text-outline">|</span>
+            <span>NODE: BLR-SOUTH-01</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Top Data Strip (Flat 4-column metric grid, zero shadows, sharp contrast) -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 w-full bg-surface-container-lowest gap-px bg-outline-variant/40 border-b border-surface-container">
+        <!-- Metric 1: Active Sessions -->
+        <div class="flex flex-col p-space-sm bg-surface-container-lowest">
+          <span class="font-label-caps text-label-caps uppercase text-secondary">ACTIVE SESSIONS</span>
+          <span id="metric-active-sessions" class="font-metric-xl text-metric-xl font-bold tracking-tight text-on-surface mt-0.5">42,850</span>
+          <span class="font-label-caps text-label-caps text-secondary mt-0.5">+4.2% FROM T-1H</span>
+        </div>
+
+        <!-- Metric 2: Risk Index -->
+        <div class="flex flex-col p-space-sm bg-surface-container-lowest">
+          <div class="flex items-center justify-between">
+            <span class="font-label-caps text-label-caps uppercase text-secondary">RISK INDEX</span>
+            <div class="flex items-center gap-1">
+              <span id="metric-risk-dot" class="w-1.5 h-1.5 bg-green-600"></span>
+              <span id="metric-risk-status" class="font-label-caps text-label-caps text-green-700">NORMAL</span>
+            </div>
+          </div>
+          <span id="metric-risk-index" class="font-metric-xl text-metric-xl font-bold tracking-tight text-on-surface mt-0.5">0.18</span>
+          <span class="font-label-caps text-label-caps text-secondary mt-0.5">THRESHOLD: 0.65</span>
+        </div>
+
+        <!-- Metric 3: Liveness Checks -->
+        <div class="flex flex-col p-space-sm bg-surface-container-lowest">
+          <span class="font-label-caps text-label-caps uppercase text-secondary">LIVENESS CHECKS</span>
+          <span id="metric-liveness-checks" class="font-metric-xl text-metric-xl font-bold tracking-tight text-on-surface mt-0.5">312</span>
+          <span class="font-label-caps text-label-caps text-secondary mt-0.5">QUEUE: OPTIMAL</span>
+        </div>
+
+        <!-- Metric 4: Locked Accounts -->
+        <div class="flex flex-col p-space-sm bg-surface-container-lowest">
+          <div class="flex items-center justify-between">
+            <span class="font-label-caps text-label-caps uppercase text-secondary">LOCKED ACCOUNTS</span>
+            <span class="w-1.5 h-1.5 bg-error"></span>
+          </div>
+          <span id="metric-locked-accounts" class="font-metric-xl text-metric-xl font-bold tracking-tight text-error mt-0.5">14</span>
+          <span class="font-label-caps text-label-caps text-error uppercase mt-0.5">ACTION REQUIRED</span>
+        </div>
+      </div>
+
+      <!-- 3. Primary Content Section -->
+      <div class="flex flex-col w-full gap-space-md p-space-md">
+
+        <!-- Section A: Verification Inspection Drawer / Card -->
+        <div class="flex flex-col w-full bg-surface-container-lowest p-space-md gap-space-md border border-surface-container">
+          
+          <!-- Drawer Header Bar -->
+          <div class="flex items-center justify-between bg-surface-container-low p-space-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+              <span id="inspect-rider-name" class="font-label-caps text-label-caps uppercase text-on-surface font-bold tracking-wider">
+                INSPECTION: RAJESH KUMAR
+              </span>
+              <span id="inspect-rider-id" class="font-data-mono text-data-mono text-secondary">#RD-88492</span>
+            </div>
+            <div id="inspect-status-badge" class="flex items-center gap-1 bg-surface-container-highest px-space-xs py-0.5">
+              <span id="inspect-status-dot" class="w-1.5 h-1.5 bg-amber-600"></span>
+              <span id="inspect-status-text" class="font-label-caps text-label-caps text-amber-800 uppercase font-bold">LIVENESS_PENDING</span>
+            </div>
+          </div>
+
+          <!-- Document vs Live Face Comparison -->
+          <div class="grid grid-cols-2 gap-space-sm w-full">
+            <!-- Baseline Box -->
+            <div class="flex flex-col bg-surface-container-low p-space-xs gap-space-xs">
+              <div class="flex items-center justify-between px-1">
+                <span class="font-label-caps text-label-caps text-secondary uppercase tracking-tight">AADHAAR E-KYC BASELINE</span>
+                <span class="font-data-mono text-data-mono text-secondary">2021.04</span>
+              </div>
+              <div class="w-full aspect-square bg-surface-container-highest relative overflow-hidden">
+                <img id="inspect-baseline-img" alt="Aadhaar baseline photo" class="w-full h-full object-cover grayscale contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATXHtS1hx20mrHfzsdg2hem9hr5EWVr1I8OeO3ttq2UEIqgmxnqCwgc0J2w98ugKNjUgaP1ydRy51v8WFk6fdcMFAH_7YTSDxmXKJ-uHuEi75sa348L3KzIHuBI6sRCRqtI4ba4HPe6KaLHxS-sm6v1XD7pNbXNQlSFbIJsPY_W_4A5pWgAXJqeKzImmRvFIXvKqren2VK2masxwhWYmtRotHqPTI57JFqzqtCYztZzk-zuhBMLnzOPg"/>
+                <div class="absolute bottom-1 left-1 bg-primary text-on-primary font-label-caps text-[9px] px-1 py-0.2 uppercase">
+                  ARCHIVED_MASTER
+                </div>
+              </div>
+            </div>
+
+            <!-- Field Scan Box -->
+            <div class="flex flex-col bg-surface-container-low p-space-xs gap-space-xs">
+              <div class="flex items-center justify-between px-1">
+                <span class="font-label-caps text-label-caps text-secondary uppercase tracking-tight">LIVE FIELD SCAN</span>
+                <span id="inspect-diff-pct" class="font-data-mono text-data-mono text-amber-700 font-bold">DIFF: +5.8%</span>
+              </div>
+              <div class="w-full aspect-square bg-surface-container-highest relative overflow-hidden">
+                <img id="inspect-live-img" alt="Live field webcam scan" class="w-full h-full object-cover grayscale contrast-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl1xVgnT55F3SFZknlEBs8XKP_oFL5QgxTYiClyd74thpyZKNz6x4Wf6vHAqXxOr3ZkSdpaV_f6AM8B-sBP8dyWeXdX9XZkraj_0Z1GmhEmMgQJzNlRl_Sfs-ivCIV1BgIXCFxy2w2_Dr_9Jjpj5hDC-iw_MthxZrA9GQ7vE35YELN0pRPqoq8m9AAk_InDnkeVxoPV4hQuwF2D5VNBtKPngWN_F4-J5SrwQ5AjVAlcmHQuMA0l8AVtg"/>
+                <div class="absolute bottom-1 left-1 bg-amber-600 text-on-primary font-label-caps text-[9px] px-1 py-0.2 uppercase">
+                  INGEST: REAL-TIME
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Telemetry Text Summary Block -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 bg-surface-container-low p-space-sm">
+            <div class="flex flex-col">
+              <span class="font-label-caps text-label-caps uppercase text-secondary">DEVICE HARDWARE HASH</span>
+              <span id="inspect-hardware-hash" class="font-data-mono text-data-mono text-on-surface font-semibold mt-0.5">UNRECOGNIZED // PIXEL 7 (REV-3)</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-label-caps text-label-caps uppercase text-secondary">FACIAL MATCH CONFIDENCE</span>
+              <span id="inspect-facial-confidence" class="font-data-mono text-data-mono text-green-700 font-bold mt-0.5">94.2% [AFFIRMATIVE_MATCH]</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-label-caps text-label-caps uppercase text-secondary">CELL TOWER &amp; GPS DELTA</span>
+              <span id="inspect-gps-delta" class="font-data-mono text-data-mono text-on-surface mt-0.5">NORMAL: 0.2 KM DRIFT</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-label-caps text-label-caps uppercase text-error font-bold">ACTIVE RISK VECTOR</span>
+              <span id="inspect-risk-vector" class="font-data-mono text-data-mono text-error font-bold mt-0.5">SIM_CHANGE + HARDWARE_MISMATCH</span>
+            </div>
+          </div>
+
+          <!-- Primary Action Buttons -->
+          <div class="flex flex-col sm:flex-row gap-space-xs w-full pt-space-xs">
+            <button id="btn-action-freeze" class="flex-1 bg-error text-on-error font-data-mono text-body-sm font-bold uppercase py-2.5 px-space-md text-center hover:opacity-90 active:bg-primary transition-opacity" type="button">
+              FREEZE ACCOUNT
+            </button>
+            <button id="btn-action-approve" class="flex-1 bg-primary text-on-primary font-data-mono text-body-sm font-semibold uppercase py-2.5 px-space-md text-center hover:bg-secondary transition-colors" type="button">
+              APPROVE SESSION
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <button id="btn-action-spotcheck" class="font-data-mono text-label-caps text-secondary underline hover:text-on-surface uppercase tracking-wider" type="button">
+              [ TRIGGER SECONDARY SPOT-CHECK (OTP + VIDEO-PROMPT) ]
+            </button>
+            <span id="inspect-incident-key" class="font-label-caps text-label-caps text-secondary">INCIDENT_KEY: 88492-X</span>
+          </div>
+        </div>
+
+        <!-- Section B: Live Audit Stream -->
+        <div class="flex flex-col w-full bg-surface-container-lowest p-space-md gap-space-sm border border-surface-container">
+          
+          <!-- Section Header -->
+          <div class="flex items-center justify-between pb-space-xs">
+            <div class="flex items-center gap-space-xs">
+              <span class="font-headline-sm text-headline-sm uppercase font-bold tracking-tight">LIVE AUDIT STREAM</span>
+              <span class="font-label-caps text-label-caps text-secondary">// REAL-TIME INGESTION</span>
+            </div>
+            <span id="audit-record-count" class="font-data-mono text-data-mono text-secondary">(6 ACTIVE RECORDS)</span>
+          </div>
+
+          <!-- Stream List (Swiss Flat Rows) -->
+          <div class="flex flex-col w-full divide-y divide-surface-container gap-0">
+            <!-- Table Column Legend for Quick Scan -->
+            <div class="hidden sm:grid sm:grid-cols-12 gap-2 py-1 px-space-sm font-label-caps text-label-caps text-secondary uppercase bg-surface-container-low">
+              <span class="col-span-2">TIMESTAMP</span>
+              <span class="col-span-2">RIDER ID</span>
+              <span class="col-span-2">ZONE</span>
+              <span class="col-span-3">BEHAVIOR SIGNAL</span>
+              <span class="col-span-1 text-right">SCORE</span>
+              <span class="col-span-2 text-right">STATUS</span>
+            </div>
+
+            <!-- Live Rows Container (populated dynamically) -->
+            <div id="audit-stream-rows" class="flex flex-col w-full divide-y divide-surface-container">
+              <!-- Dynamically rendered -->
+            </div>
+          </div>
+
+          <!-- Feed Pagination / Status Bar -->
+          <div class="flex items-center justify-between pt-space-xs font-label-caps text-label-caps text-secondary border-t border-surface-container">
+            <span>AUTO-PULL BUFFER: 500ms</span>
+            <div class="flex gap-space-sm">
+              <span id="btn-pause-stream" class="underline cursor-pointer hover:text-on-surface font-semibold">[PAUSE STREAM]</span>
+              <span id="btn-dump-log" class="underline cursor-pointer hover:text-on-surface font-semibold">[DUMP LOG (CSV)]</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Navigation Bar -->
+  <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-1px_8px_rgba(0,0,0,0.04)]" data-active-classes="bg-surface-container-high text-primary font-bold">
+    <div class="h-16 grid grid-cols-4 items-stretch">
+      <a aria-current="page" class="flex flex-col items-center justify-center min-h-[44px] gap-0.5 transition-colors bg-surface-container-high text-primary font-bold" data-path="risk-console" href="#">
+        <span class="material-symbols-outlined text-[20px]">grid_view</span>
+        <span class="font-label-caps text-label-caps uppercase">RADAR</span>
+      </a>
+      <a class="flex flex-col items-center justify-center min-h-[44px] gap-0.5 text-secondary hover:text-on-surface transition-colors" data-path="manifest-monitor" href="#">
+        <span class="material-symbols-outlined text-[20px]">local_shipping</span>
+        <span class="font-label-caps text-label-caps uppercase">MANIFEST</span>
+      </a>
+      <a class="flex flex-col items-center justify-center min-h-[44px] gap-0.5 text-secondary hover:text-on-surface transition-colors" data-path="threat-telemetry" href="#">
+        <span class="material-symbols-outlined text-[20px]">warning</span>
+        <span class="font-label-caps text-label-caps uppercase">THREATS</span>
+      </a>
+      <a class="flex flex-col items-center justify-center min-h-[44px] gap-0.5 text-secondary hover:text-on-surface transition-colors" data-path="facility-matrix" href="#">
+        <span class="material-symbols-outlined text-[20px]">apartment</span>
+        <span class="font-label-caps text-label-caps uppercase">NODES</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Firebase & Admin Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/admin-controller.js"></script>
+
+  <script>
+    function promptConfigModal() {
+      const current = JSON.stringify(window.TrustJugglerFirebase.getConfig(), null, 2);
+      const input = prompt("Paste your Firebase Web App Config JSON here:", current);
+      if (input) {
+        try {
+          const parsed = JSON.parse(input);
+          window.TrustJugglerFirebase.saveConfig(parsed);
+        } catch (e) {
+          alert("Invalid JSON configuration. Please try again.");
+        }
+      }
+    }
+  </script>
+</body>
+</html>
