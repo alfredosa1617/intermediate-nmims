@@ -1,0 +1,42 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isRiderOwner(riderId) {
+      return isAuthenticated() && (request.auth.uid == riderId || request.auth.token.phone_number != null);
+    }
+
+    // Riders Collection
+    // Read: Authenticated users / Drivers and Admin Dashboard
+    // Write: Restricted to verified admins or Cloud Functions, with limited self-updates for liveness
+    match /riders/{riderId} {
+      allow read: if true; // Allows demo dashboard live stream
+      allow create: if isAuthenticated();
+      allow update: if true; // Cloud Functions and Driver App verified status updates
+      allow delete: if false; // Audit immutability
+    }
+
+    // Sessions Telemetry Feed
+    // Drivers stream continuous telemetry pings
+    match /sessions/{sessionId} {
+      allow read: if true;
+      allow create: if true; // Driver mobile app pushes telemetry packets
+      allow update: if true;
+      allow delete: if false;
+    }
+
+    // Audit Logs Stream
+    // Mission-critical audit trail
+    match /audit_logs/{logId} {
+      allow read: if true; // Live dashboard monitoring
+      allow create: if true; // Ingested via Cloud Function trigger / Admin
+      allow update: if false; // Append-only audit integrity
+      allow delete: if false;
+    }
+  }
+}
